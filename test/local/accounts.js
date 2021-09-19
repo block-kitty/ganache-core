@@ -14,17 +14,17 @@ describe("Accounts", () => {
   const badAddress = "0x1234567890123456789012345678901234567890";
   const mnemonic = "into trim cross then helmet popular suit hammer cart shrug oval student";
 
-  it("should respect the BIP99 mnemonic", async() => {
+  it("should respect the BIP99 mnemonic", async () => {
     const options = { mnemonic };
     const { accounts } = await initializeTestProvider(options);
 
     assert.strictEqual(accounts[0], expectedAddress);
   });
 
-  it("should lock all accounts when specified", async() => {
+  it("should lock all accounts when specified", async () => {
     const options = {
       mnemonic,
-      secure: true
+      secure: true,
     };
 
     const { accounts, web3 } = await initializeTestProvider(options);
@@ -35,18 +35,18 @@ describe("Accounts", () => {
           from: account,
           to: badAddress,
           value: web3.utils.toWei("1", "ether"),
-          gasLimit: 90000
+          gasLimit: 90000,
         });
         return assert.rejects(tx, /signer account is locked/, "should not be able to unlock the count");
       })
     );
   });
 
-  it("should unlock specified accounts, in conjunction with --secure", async() => {
+  it("should unlock specified accounts, in conjunction with --secure", async () => {
     const options = {
       mnemonic,
       secure: true,
-      unlocked_accounts: [expectedAddress]
+      unlocked_accounts: [expectedAddress],
     };
 
     const { accounts, web3 } = await initializeTestProvider(options);
@@ -57,7 +57,7 @@ describe("Accounts", () => {
           from: account,
           to: badAddress,
           value: web3.utils.toWei("1", "ether"),
-          gasLimit: 90000
+          gasLimit: 90000,
         });
 
         if (account === expectedAddress) {
@@ -69,12 +69,12 @@ describe("Accounts", () => {
     );
   });
 
-  it("should unlock specified accounts, in conjunction with --secure, using array indexes", async() => {
+  it("should unlock specified accounts, in conjunction with --secure, using array indexes", async () => {
     const accountIndexToUnlock = 5;
     const options = {
       mnemonic,
       secure: true,
-      unlocked_accounts: [accountIndexToUnlock]
+      unlocked_accounts: [accountIndexToUnlock],
     };
 
     const { accounts, web3 } = await initializeTestProvider(options);
@@ -86,7 +86,7 @@ describe("Accounts", () => {
           from: account,
           to: badAddress,
           value: web3.utils.toWei("1", "ether"),
-          gasLimit: 90000
+          gasLimit: 90000,
         });
 
         if (account === unlockedAccount) {
@@ -98,12 +98,12 @@ describe("Accounts", () => {
     );
   });
 
-  it("should unlock accounts even if private key isn't managed by the testrpc (impersonation)", async() => {
+  it("should unlock accounts even if private key isn't managed by the testrpc (impersonation)", async () => {
     const options = {
       mnemonic,
       secure: true,
       unlocked_accounts: [0, badAddress],
-      gasPrice: 0
+      gasPrice: 0,
     };
 
     const { web3 } = await initializeTestProvider(options);
@@ -113,7 +113,7 @@ describe("Accounts", () => {
       from: expectedAddress,
       to: badAddress,
       value: web3.utils.toWei("10", "ether"),
-      gasLimit: 90000
+      gasLimit: 90000,
     });
 
     // Now we should be able to send a transaction from second address without issue.
@@ -121,7 +121,7 @@ describe("Accounts", () => {
       from: badAddress,
       to: expectedAddress,
       value: web3.utils.toWei("5", "ether"),
-      gasLimit: 90000
+      gasLimit: 90000,
     });
 
     // And for the heck of it let's check the balance just to make sure it went through
@@ -131,11 +131,11 @@ describe("Accounts", () => {
     assert.strictEqual(balanceInEther, 5);
   });
 
-  it("errors when we try to sign a transaction from an account we're impersonating", async function() {
+  it("errors when we try to sign a transaction from an account we're impersonating", async function () {
     const options = {
       mnemonic,
       secure: true,
-      unlocked_accounts: [0, badAddress]
+      unlocked_accounts: [0, badAddress],
     };
 
     const { web3 } = await initializeTestProvider(options);
@@ -147,9 +147,9 @@ describe("Accounts", () => {
     );
   });
 
-  it("should create a 2 accounts when passing an object to provider", async() => {
+  it("should create a 2 accounts when passing an object to provider", async () => {
     const options = {
-      accounts: [{ balance: "0x12" }, { balance: "0x13" }]
+      accounts: [{ balance: "0x12" }, { balance: "0x13" }],
     };
 
     const { accounts } = await initializeTestProvider(options);
@@ -157,9 +157,9 @@ describe("Accounts", () => {
     assert.strictEqual(accounts.length, 2, "The number of accounts created should be 2");
   });
 
-  it("should create the correct number of accounts as specified by total_accounts", async() => {
+  it("should create the correct number of accounts as specified by total_accounts", async () => {
     const options = {
-      total_accounts: 7
+      total_accounts: 7,
     };
 
     const { accounts } = await initializeTestProvider(options);
@@ -167,9 +167,9 @@ describe("Accounts", () => {
     assert.strictEqual(accounts.length, 7, "The number of accounts created should be 7");
   });
 
-  it("should respect the default_balance_ether option", async() => {
+  it("should respect the default_balance_ether option", async () => {
     const options = {
-      default_balance_ether: 1.23456
+      default_balance_ether: 1.23456,
     };
 
     const { accounts, web3 } = await initializeTestProvider(options);
@@ -184,7 +184,7 @@ describe("Accounts", () => {
     );
   });
 
-  describe("Should handle large nonces", function() {
+  describe("Should handle large nonces", function () {
     let provider;
     let accounts;
     let from;
@@ -194,7 +194,7 @@ describe("Accounts", () => {
     const sendTransaction = (payload) => send("eth_sendTransaction", payload);
     const getTransactionByHash = (payload) => send("eth_getTransactionByHash", payload);
 
-    beforeEach("set up provider", async function() {
+    beforeEach("set up provider", async function () {
       provider = Ganache.provider();
       send = genSend(provider);
       const { result: _accounts } = await send("eth_accounts");
@@ -211,7 +211,7 @@ describe("Accounts", () => {
         new Account({
           balance: "0xffffffffffffffffffff",
           nonce: new BN(initialNonce),
-          address: from
+          address: from,
         })
       );
       // we need to mine a block for the putAccount to take effect
@@ -221,7 +221,7 @@ describe("Accounts", () => {
       currentNonce = new BN(count.slice(2), "hex");
       assert.strictEqual(currentNonce.toNumber(), initialNonce, "nonce is not equal to" + initialNonce);
       const {
-        result: { number: blockNumber }
+        result: { number: blockNumber },
       } = await send("eth_getBlockByNumber", "latest", false);
       startingBlockNumber = parseInt(blockNumber, 16);
       assert.strictEqual(startingBlockNumber, 1, "latest block number is not expected (1)");
@@ -240,9 +240,7 @@ describe("Accounts", () => {
       // create some transactions that will increment the nonce
       const tx = { value: 1, from, to: from };
       // send of our transactions and get their tx info once ready
-      const pendingHashes = Array(3)
-        .fill(tx)
-        .map(sendTransaction);
+      const pendingHashes = Array(3).fill(tx).map(sendTransaction);
       if (intervalMining) {
         await send("evm_mine");
       }
@@ -265,24 +263,64 @@ describe("Accounts", () => {
       );
     }
 
-    it("should handle nonces greater than 255 (interval)", async function() {
+    it("should handle nonces greater than 255 (interval)", async function () {
       await setUp(255);
       await runTests(true);
     });
 
-    it("should handle nonces greater than 255 (instamining)", async function() {
+    it("should handle nonces greater than 255 (instamining)", async function () {
       await setUp(255);
       await runTests(false);
     });
 
-    it("should handle nonces greater than MAX_SAFE_INTEGER (interval)", async function() {
+    it("should handle nonces greater than MAX_SAFE_INTEGER (interval)", async function () {
       await setUp(Number.MAX_SAFE_INTEGER);
       await runTests(true);
     });
 
-    it("should handle nonces greater than MAX_SAFE_INTEGER (instamining)", async function() {
+    it("should handle nonces greater than MAX_SAFE_INTEGER (instamining)", async function () {
       await setUp(Number.MAX_SAFE_INTEGER);
       await runTests(false);
+    });
+    it("should lock any unlocked unknown account via evm_lockUnknownAccount", async () => {
+      const address = "0x842d35Cc6634C0532925a3b844Bc454e4438f44f";
+      const { result: unlockResult } = await send("evm_unlockUnknownAccount", address);
+      assert.strictEqual(unlockResult, true);
+
+      const { result: lockResult1 } = await send("evm_lockUnknownAccount", address);
+      assert.strictEqual(lockResult1, true);
+
+      // bonus: also make sure we return false when the account is already locked:
+      const { result: lockResult2 } = await send("evm_lockUnknownAccount", address);
+      assert.strictEqual(lockResult2, false);
+    });
+
+    it("should not lock a known account via evm_lockUnknownAccount", async () => {
+      await assert.rejects(
+        send("evm_lockUnknownAccount", accounts[0], {
+          message: "cannot lock known/personal account",
+        })
+      );
+    });
+
+    it("should not lock a personal account via evm_lockUnknownAccount", async () => {
+      // create a new personal account
+      const { result: address } = await send("personal_newAccount", "password");
+
+      // then explicitly unlock it
+      const { result } = await send("personal_unlockAccount", address, "password", 0);
+      assert.strictEqual(result, true);
+
+      // then try to lock it via evm_lockUnknownAccount
+      await assert.rejects(send("evm_lockUnknownAccount", address), {
+        message: "cannot lock known/personal account",
+      });
+    });
+
+    it("should return `false` upon lock if account isn't locked (unknown account)", async () => {
+      const address = "0x942d35Cc6634C0532925a3b844Bc454e4438f450";
+      const { result } = await send("evm_lockUnknownAccount", address);
+      assert.strictEqual(result, false);
     });
   });
 });
